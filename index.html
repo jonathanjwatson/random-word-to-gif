@@ -25,11 +25,38 @@
   </head>
   <body>
     <h1>Hello world</h1>
+    <div id="results">
+
+    </div>
 
     <script type="text/javascript">
-        $(document).ready(function(){
-            console.log("Document is ready!");
-        })
+      $(document).ready(function () {
+        console.log("Document is ready!");
+        $.ajax({
+          url: "https://random-word-api.herokuapp.com/word",
+          method: "GET",
+        }).then(function (response) {
+          console.log(response);
+          var wordToSearch = response[0];
+          console.log(wordToSearch);
+
+          var giphyQueryUrl =
+            "https://api.giphy.com/v1/gifs/search?q=" +
+            wordToSearch +
+            "&api_key=b29g54U81w1GbkyNxo6Osae29OsTEwso";
+          $.ajax({
+            url: giphyQueryUrl,
+            method: "GET",
+          }).then(function (giphyResponse) {
+            console.log(giphyResponse);
+            for(var i = 0; i < giphyResponse.data.length; i++){
+                var imageEl = $("<img>");
+                imageEl.attr("src", giphyResponse.data[i].images.fixed_height.url);
+                $("#results").append(imageEl);
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>
